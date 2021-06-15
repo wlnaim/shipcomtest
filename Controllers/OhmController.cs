@@ -11,6 +11,11 @@ namespace shipcomtest.Controllers
     [Route("api/[controller]")]
     public class OhmController : Controller
     {
+       private readonly IOhmValueCalculator ohmCalculatorService;
+       public OhmController(IOhmValueCalculator service)
+       {
+          this.ohmCalculatorService = service;
+       }
         /// <summary>
         /// Calculates the Ohm value of a resistor based on the band colors.
         /// </summary>
@@ -27,7 +32,19 @@ namespace shipcomtest.Controllers
         {
             try
             {
-                return new JsonResult(new { Result = 100 });
+               if (string.IsNullOrWhiteSpace(bandAColor))
+                  throw new ArgumentException("BandAColor parameter is invalid.");
+
+               if (string.IsNullOrWhiteSpace(bandBColor))
+                  throw new ArgumentException("BandBColor parameter is invalid.");
+
+               if (string.IsNullOrWhiteSpace(bandCColor))
+                  throw new ArgumentException("BandCColor parameter is invalid.");
+
+               if (string.IsNullOrWhiteSpace(bandDColor))
+                  throw new ArgumentException("BandDColor parameter is invalid.");
+
+               return new JsonResult(new { Result =  ohmCalculatorService.CalculateOhmValue(bandAColor.ToLower(), bandBColor.ToLower(), bandCColor.ToLower(), bandDColor.ToLower()) });
             }
             catch (ArgumentException ex)
             {
