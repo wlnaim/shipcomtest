@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,21 @@ namespace shipcomtest
             options.UseSqlServer(Configuration.GetConnectionString("ShipcomConnection")));
          services.AddScoped<IOhmValueCalculator, OhmValueCalculatorService>();
          services.AddControllers();
+
+
+         var corsBuilder = new CorsPolicyBuilder();
+         corsBuilder.AllowAnyHeader();
+         corsBuilder.AllowAnyMethod();
+         corsBuilder.AllowAnyOrigin(); 
+
+         corsBuilder.AllowCredentials();
+
+         services.AddCors(o => o.AddPolicy("SiteCorsPolicy", builder =>
+         {
+            builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+         }));
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

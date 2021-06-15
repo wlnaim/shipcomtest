@@ -6,7 +6,7 @@ using shipcomtest.Models;
 
 namespace shipcomtest
 {
-   public class OhmValueCalculatorService:IOhmValueCalculator
+   public class OhmValueCalculatorService : IOhmValueCalculator
    {
       const decimal default_tolerance = 0.2m;
       private readonly List<ColorCode> _colorCodes;
@@ -16,67 +16,42 @@ namespace shipcomtest
       {
          _colorCodes = new List<ColorCode>();
          _colorCodeDict = new Dictionary<string, ColorCode>();
+         var colorsData = context.ColorConfigurations.ToList();
 
-         var blackColor = new ColorCode { color = "Black"};
-         blackColor.Fill(context);
-         _colorCodeDict.Add(blackColor.color.ToLower(), blackColor);
-         _colorCodes.Add(blackColor);
-         
-         var brownColor = new ColorCode { color = "Brown"};
-         brownColor.Fill(context);
-         _colorCodeDict.Add(brownColor.color.ToLower(), brownColor);
-         _colorCodes.Add(brownColor);
+         if (colorsData.Count == 0)
+            PopulateColorsData(context);
 
-         var redColor = new ColorCode { color = "Red"};
-         redColor.Fill(context);
-         _colorCodeDict.Add(redColor.color.ToLower(), redColor);
-         _colorCodes.Add(redColor);
-
-         var orangeColor = new ColorCode { color = "Orange"};
-         orangeColor.Fill(context);
-         _colorCodeDict.Add(orangeColor.color.ToLower(), orangeColor);
-         _colorCodes.Add(orangeColor);
-
-         var yelllowColor = new ColorCode { color = "Yellow" };
-         yelllowColor.Fill(context);
-         _colorCodeDict.Add(yelllowColor.color.ToLower(), yelllowColor);
-         _colorCodes.Add(yelllowColor);
-
-         var greenColor = new ColorCode { color = "Green" };
-         greenColor.Fill(context);
-         _colorCodeDict.Add(greenColor.color.ToLower(), greenColor);
-         _colorCodes.Add(greenColor);
-
-         var blueColor = new ColorCode { color = "Blue" };
-         blueColor.Fill(context);
-         _colorCodeDict.Add(blueColor.color.ToLower(), blueColor);
-         _colorCodes.Add(blueColor);
-
-         var violetColor = new ColorCode { color = "Violet"};
-         violetColor.Fill(context);
-         _colorCodeDict.Add(violetColor.color.ToLower(), violetColor);
-         _colorCodes.Add(violetColor);
-
-         var greyColor = new ColorCode { color = "Grey" };
-         greyColor.Fill(context);
-         _colorCodeDict.Add(greyColor.color.ToLower(), greyColor);
-         _colorCodes.Add(greyColor);
-
-         var whiteColor = new ColorCode { color = "White" };
-         whiteColor.Fill(context);
-         _colorCodeDict.Add(whiteColor.color.ToLower(), whiteColor);
-         _colorCodes.Add(whiteColor);
-
-         var goldColor = new ColorCode { color = "Gold"};
-         goldColor.Fill(context);
-         _colorCodeDict.Add(goldColor.color.ToLower(), goldColor);
-         _colorCodes.Add(goldColor);
-
-         var silverColor = new ColorCode { color = "Silver" };
-         silverColor.Fill(context);
-         _colorCodeDict.Add(silverColor.color.ToLower(), silverColor);
-         _colorCodes.Add(silverColor);
+         foreach (var colorData in colorsData)
+         {
+            var color = new ColorCode
+            {
+               color = colorData.Color,
+               multiplier = colorData.Multiplier.HasValue ? colorData.Multiplier.Value : (decimal?)null,
+               significantDigits = colorData.SignificantDigits.HasValue ? colorData.SignificantDigits.Value : (decimal?)null,
+               tolerance = colorData.Tolerance.HasValue ? colorData.Tolerance.Value : (decimal?)null
+            };
+            _colorCodeDict.Add(color.color.ToLower(), color);
+            _colorCodes.Add(color);
+         }
       }
+
+      private void PopulateColorsData(ShipcomDbContext context)
+      {
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 1, SignificantDigits = 0, Tolerance = (decimal?)null, Color = "Black" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 10, SignificantDigits = 1, Tolerance = 0.100M, Color = "Brown" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 100, SignificantDigits = 2, Tolerance = 0.200M, Color = "Red" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 1000, SignificantDigits = 3, Tolerance = (decimal?)null, Color = "Orange" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 10000, SignificantDigits = 4, Tolerance = (decimal?)null, Color = "Yellow" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 100000, SignificantDigits = 5, Tolerance = 0.005M, Color = "Green" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 1000000, SignificantDigits = 6, Tolerance = (decimal?)null, Color = "Blue" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = 10000000, SignificantDigits = 7, Tolerance = (decimal?)null, Color = "Violet" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = (int?)null, SignificantDigits = 8, Tolerance = (decimal?)null, Color = "Grey" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = (int?)null, SignificantDigits = 9, Tolerance = (decimal?)null, Color = "White" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = (int?)null, SignificantDigits = (int?)null, Tolerance = 0.050M, Color = "Gold" });
+         context.ColorConfigurations.Add(new ColorConfiguration() { Multiplier = (int?)null, SignificantDigits = (int?)null, Tolerance = 0.100M, Color = "Silver" });
+         context.SaveChanges();
+      }
+
       public int CalculateOhmValue(string bandAColor, string bandBColor, string bandCColor, string bandDColor)
       {
          if (!_colorCodeDict.ContainsKey(bandAColor)) throw new ArgumentException("invalid parameters");
@@ -93,7 +68,7 @@ namespace shipcomtest
          decimal abcValue = abValue * colorCCode.multiplier.Value;
          var tolerate = GetTolerate(bandDColor);
 
-         return System.Convert.ToInt32( Math.Round(abcValue * (1 + tolerate)));
+         return System.Convert.ToInt32(Math.Round(abcValue * (1 + tolerate)));
       }
 
       private decimal GetTolerate(string bandDColor)
