@@ -1,0 +1,145 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    .body {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 1.5em 2em;
+        margin: 0 1em;
+        .resistor-params {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 1.5em 2em;
+            margin: 1em;
+            .first-band-selector {
+                .select {
+                    min-width: 100px;
+                }
+            }
+            .second-band-selector {
+                .select {
+                    min-width: 100px;
+                }
+            }
+            .multiplier-selector {
+                .select {
+                    min-width: 100px;
+                }
+            }
+            .tolerance-selector {
+                .select {
+                    min-width: 100px;
+                }
+            }
+        }
+        .result {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 1.5em 2em;
+            margin: 1em;
+            .resistor-img {
+                position: relative;
+                width: 319px;
+                height: 134px;
+                margin: 40px auto;
+                .first-band {
+                    position: absolute;
+                    top: 2px;
+                    left: 30px;
+                    width: 14px;
+                    height: 72px;
+                    background: #C5C5C5;
+                }
+                .second-band {
+                    position: absolute;
+                    top: 12px;
+                    left: 72px;
+                    width: 14px;
+                    height: 52px;
+                    background: #C5C5C5;
+                }
+                .multiplier {
+                    position: absolute;
+                    top: 12px;
+                    right: 142px;
+                    width: 14px;
+                    height: 52px;
+                    background: #C5C5C5;
+                }
+                .tolerance {
+                    position: absolute;
+                    top: 2px;
+                    right: 30px;
+                    width: 14px;
+                    height: 72px;
+                    background: #C5C5C5;
+                }
+                .black {
+                    background: #000 !important;
+                }
+                .brown {
+                    background: #512627 !important;
+                }
+                .red {
+                    background: #cc0000 !important;
+                }
+                .orange {
+                    background: #D87347 !important;
+                }
+                .yellow {
+                    background: #E6C951 !important;
+                }
+                .green {
+                    background: #528F65 !important;
+                }
+                .blue {
+                    background: #0F5190 !important;
+                }
+                .violet {
+                    background: #6967CE !important;
+                }
+                .grey {
+                    background: #7D7D7D !important;
+                }
+                .white {
+                    background: #fff !important;
+                }
+                .gold {
+                    background: #C08327 !important;
+                }
+                .silver {
+                    background: #BFBEBF !important;
+                }
+            }
+            .resistance {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+}
+
+@media (max-width: 510px) {
+    .home {
+        .body {
+            padding: .5px;    
+            margin: .5px;    
+            .result {
+                padding: .5px;
+            }
+        }
+    }
+}
+@media (min-width: 800px) {
+    .home {
+        .body {
+            display: flex;
+            .resistor-params {
+                width: 50%;
+            }
+            .result {
+                width: 50%;
+            }
+        }
+    }
+}

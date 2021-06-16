@@ -60,6 +60,7 @@ namespace shipcomtest
          var colorBCode = _colorCodeDict[bandBColor];
          if (!_colorCodeDict.ContainsKey(bandCColor)) throw new ArgumentException("invalid parameters");
          var colorCCode = _colorCodeDict[bandCColor];
+
          if (!string.IsNullOrEmpty(bandDColor) && !_colorCodeDict.ContainsKey(bandDColor)) throw new ArgumentException("invalid parameters");
 
          if (!colorACode.isSignificant || !colorBCode.isSignificant || !colorCCode.isMultiplier) throw new ArgumentException("invalid parameters");
